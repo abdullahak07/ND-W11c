@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>COMP6013 Week 11 · IoT Security City</title>
+<meta name="theme-color" content="#f6f1e7">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="scrollbar"></div>
+<div class="ambient a1"></div><div class="ambient a2"></div>
+
+<header class="topbar">
+  <a class="brand" href="#top"><span class="brand-chip">W11</span><span><b>COMP6013</b><small>IoT Security City</small></span></a>
+  <nav>
+    <a href="#thing">Thing</a><a href="#path">Path</a><a href="#risk">Risk</a><a href="#objectives">Objectives</a><a href="#tamper">Tamper</a><a href="#gateway">Gateway</a><a href="#minisec">MiniSec</a>
+  </nav>
+  <div class="score"><span>DEFENSE XP</span><b id="xp">0</b></div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="hero-copy">
+    <div class="eyebrow">WEEK 11 · NETWORK SECURITY & CRYPTOGRAPHY</div>
+    <h1>SECURE<br>THE <span>SMART CITY.</span></h1>
+    <p>Billions of small devices sense the world, make decisions, move data and sometimes act on the physical environment. This class turns the IoT lecture into a living city: build a device, route its data, defend its gateway, stop tampering and survive replay attacks.</p>
+    <div class="hero-actions"><button class="primary" data-jump="#thing">Enter the city</button><button class="secondary" data-jump="#final">Jump to final challenge</button></div>
+    <div class="hero-facts">
+      <article><b>5</b><span>core IoT device components</span></article>
+      <article><b>4</b><span>Internet generations → IoT</span></article>
+      <article><b>7</b><span>security objectives</span></article>
+      <article><b>2</b><span>MiniSec communication modes</span></article>
+    </div>
+  </div>
+  <div class="city-visual" aria-label="Animated IoT city data flow">
+    <div class="sun"></div>
+    <div class="cloud cloud-one"><span>CLOUD</span></div>
+    <div class="cloud cloud-two"></div>
+    <div class="tower"><i></i><i></i><i></i><b>CORE</b></div>
+    <div class="fog-station"><span>FOG</span><i></i><i></i><i></i></div>
+    <div class="house"><b>SMART HOME</b><span class="window"></span><span class="door"></span></div>
+    <div class="factory"><b>FACTORY</b><i></i><i></i><i></i></div>
+    <div class="car">EV</div>
+    <div class="sensor sensor-1">S1</div><div class="sensor sensor-2">S2</div><div class="sensor sensor-3">S3</div>
+    <svg class="signal-map" viewBox="0 0 800 570">
+      <path d="M130 435 C220 400 235 365 315 330"/>
+      <path d="M630 435 C560 390 525 365 470 330"/>
+      <path d="M395 315 C395 260 420 230 425 190"/>
+      <path d="M430 165 C470 110 505 92 560 82"/>
+    </svg>
+    <div class="packet p1"></div><div class="packet p2"></div><div class="packet p3"></div>
+    <div class="city-caption"><b>EDGE → FOG → CORE → CLOUD</b><span>Security has to survive the whole journey.</span></div>
+  </div>
+</section>
+
+<section class="zone" id="thing">
+  <div class="zone-head">
+    <div><span class="num">01</span><div class="eyebrow">INSIDE A SMART THING</div><h2>What makes an IoT device “smart”?</h2></div>
+    <p>An IoT device is not just a tiny computer. It connects sensing, decision-making, communication and sometimes physical action. The lecture identifies five core device components.</p>
+  </div>
+
+  <div class="thing-lab">
+    <div class="thing-diagram" id="thingDiagram">
+      <div class="device-shell"><span class="device-screen">0 / 5 ONLINE</span><i class="device-led"></i></div>
+      <button class="part sensor-part" data-part="sensor"><span>SENSOR</span><small>Measures the world</small></button>
+      <button class="part actuator-part" data-part="actuator"><span>ACTUATOR</span><small>Changes the world</small></button>
+      <button class="part mcu-part" data-part="mcu"><span>MICROCONTROLLER</span><small>The “smart” brain</small></button>
+      <button class="part radio-part" data-part="radio"><span>TRANSCEIVER</span><small>Sends + receives</small></button>
+      <button class="part power-part" data-part="power"><span>POWER</span><small>Keeps it alive</small></button>
+    </div>
+    <div class="lab-panel">
+      <span>GAME 1 · BUILD A THING</span>
+      <h3 id="partTitle">Bring the device online.</h3>
+      <p id="partText">Click each component. The city will not accept the device until all five are understood.</p>
+      <div class="progress-dots" id="partDots"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="micro-example" id="partExample">Example: a smart thermostat senses temperature, decides what to do, sends data and can switch heating on or off.</div>
+    </div>
+  </div>
+
+  <div class="evolution-strip">
+    <article><span>1</span><b>IT</b><small>PCs, servers, routers · mainly wired</small></article><i>→</i>
+    <article><span>2</span><b>OT</b><small>SCADA, medical machinery, process control</small></article><i>→</i>
+    <article><span>3</span><b>Personal tech</b><small>Phones, tablets, eBook readers · wireless</small></article><i>→</i>
+    <article class="current"><span>4</span><b>Sensor / actuator</b><small>Billions of embedded single-purpose devices</small></article>
+  </div>
+
+  <div class="rfid-band">
+    <div><span>RFID</span><h3>Tag + Reader</h3><p>Radio waves identify nearby items. Tags store information; readers acquire and sometimes rewrite it, then pass the result to a computer system.</p></div>
+    <div class="rfid-demo"><div class="tag">TAG</div><div class="waves">)))</div><div class="reader">READER</div></div>
+  </div>
+
+  <div class="deep-grid">
+    <button class="flip"><div class="flip-in"><div class="face front"><small>DEEP DIVE 01</small><h3>Low bandwidth is normal</h3><p>Many IoT devices send only tiny packets occasionally.</p><em>Flip ↻</em></div><div class="face back"><h3>Embedded device reality</h3><ul><li>Many deeply embedded devices capture or use small amounts of data.</li><li>Countless products only need intermittent packet delivery.</li><li>Exceptions include high-resolution security cameras and video VoIP devices, which may need sustained high bandwidth.</li><li>This diversity affects network and security design.</li></ul></div></div></button>
+    <button class="flip"><div class="flip-in"><div class="face front"><small>DEEP DIVE 02</small><h3>Sensor ≠ actuator</h3><p>One observes. One acts.</p><em>Flip ↻</em></div><div class="face back"><h3>Sensing vs acting</h3><ul><li>A sensor measures a physical, chemical or biological parameter and outputs an electronic signal.</li><li>An actuator receives an electronic signal and produces a physical effect.</li><li>A temperature sensor reads the room; a valve actuator can change water flow.</li><li>Actuators make cybersecurity a safety issue because attacks can affect the physical world.</li></ul></div></div></button>
+    <button class="flip"><div class="flip-in"><div class="face front"><small>DEEP DIVE 03</small><h3>Microcontroller + radio</h3><p>Computation and communication are separate jobs.</p><em>Flip ↻</em></div><div class="face back"><h3>The embedded brain + voice</h3><ul><li>The microcontroller provides the “smart” behaviour inside the device.</li><li>The transceiver contains the electronics needed to transmit and receive data.</li><li>Wireless options can include Wi-Fi, ZigBee and other schemes.</li><li>Power is often battery-based, so every extra security operation has an energy cost.</li></ul></div></div></button>
+  </div>
+</section>
+
+<section class="zone alt" id="path">
+  <div class="zone-head">
+    <div><span class="num">02</span><div class="eyebrow">THE DATA JOURNEY</div><h2>Edge, Fog, Core, Cloud — where should work happen?</h2></div>
+    <p>IoT data often starts at tiny devices, passes through gateways, is processed near the edge when possible, then moves through a high-capacity core to cloud storage and applications.</p>
+  </div>
+
+  <div class="route">
+    <button class="route-node edge-node active" data-layer="edge"><span>EDGE</span><b>Sensors + actuators</b><small>Data starts here</small></button>
+    <i>→</i>
+    <button class="route-node gateway-node" data-layer="gateway"><span>GATEWAY</span><b>Translate + aggregate</b><small>Bridge protocols</small></button>
+    <i>→</i>
+    <button class="route-node fog-node" data-layer="fog"><span>FOG</span><b>Process nearby</b><small>Low latency</small></button>
+    <i>→</i>
+    <button class="route-node core-node" data-layer="core"><span>CORE</span><b>High-capacity backbone</b><small>Connect regions</small></button>
+    <i>→</i>
+    <button class="route-node cloud-node" data-layer="cloud"><span>CLOUD</span><b>Store + analyse at scale</b><small>Central apps</small></button>
+  </div>
+  <div class="route-readout" id="routeReadout"></div>
+
+  <div class="fog-game gamebox">
+    <div class="game-title"><span>GAME 2 · WHERE SHOULD IT RUN?</span><h3 id="fogQuestion">A factory emergency-stop sensor must trigger within milliseconds. Where should the first decision happen?</h3></div>
+    <div class="choice-row" id="fogChoices"><button data-answer="fog">Fog / near edge</button><button data-answer="cloud">Cloud only</button><button data-answer="core">Core only</button></div>
+    <div class="feedback" id="fogFeedback">Choose the location that best matches the latency requirement.</div>
+  </div>
+
+  <div class="fog-operations">
+    <article><b>Evaluate</b><span>Should this data go higher?</span></article>
+    <article><b>Format</b><span>Make data consistent</span></article>
+    <article><b>Expand / decode</b><span>Add context</span></article>
+    <article><b>Distill</b><span>Reduce or summarise</span></article>
+    <article><b>Assess</b><span>Threshold or alert?</span></article>
+  </div>
+
+  <div class="compare">
+    <div class="compare-head"><b>CLOUD</b><b>FOG</b></div>
+    <div><span>Processing location</span><b>Center</b><b>Edge</b></div>
+    <div><span>Latency</span><b>Higher</b><b>Lower</b></div>
+    <div><span>Control</span><b>Centralised</b><b>Distributed</b></div>
+    <div><span>Main content generator</span><b>Humans</b><b>Devices / sensors</b></div>
+    <div><span>Device scale</span><b>Millions</b><b>Tens of billions</b></div>
+  </div>
+
+  <div class="deep-grid">
+    <button class="flip"><div class="flip-in"><div class="face front"><small>DEEP DIVE 01</small><h3>Why fog exists</h3><p>Sending everything to cloud can be wasteful and slow.</p><em>Flip ↻</em></div><div class="face back"><h3>Fog computing</h3><ul><li>Industrial sensors may generate massive volumes of data.</li><li>Processing near sensors converts raw flows into information suitable for storage and higher-level processing.</li><li>Data reduction lowers network and storage load.</li><li>Fog helps with latency, privacy, network-capacity and scale challenges.</li></ul></div></div></button>
+    <button class="flip"><div class="flip-in"><div class="face front"><small>DEEP DIVE 02</small><h3>Gateway as translator</h3><p>Different device protocols still need to reach bigger networks.</p><em>Flip ↻</em></div><div class="face back"><h3>Gateway role</h3><ul><li>Interconnects IoT devices with higher-level communication networks.</li><li>Translates between device protocols and wider network protocols.</li><li>Can perform basic aggregation.</li><li>Later in the lecture the gateway also becomes a major security enforcement point.</li></ul></div></div></button>
+    <button class="flip"><div class="flip-in"><div class="face front"><small>DEEP DIVE 03</small><h3>Core + cloud</h3><p>Backbone first, large-scale processing after.</p><em>Flip ↻</em></div><div class="face back"><h3>Core and cloud</h3><ul><li>The core connects geographically dispersed fog networks.</li><li>It uses high-performance routers and high-capacity links with redundancy.</li><li>Cloud provides large-scale storage and processing for aggregated IoT data.</li><li>Cloud servers host applications that manage devices and analyse their data.</li></ul></div></div></button>
+  </div>
+</section>
+
+<section class="zone" id="risk">
+  <div class="zone-head">
+    <div><span class="num">03</span><div class="eyebrow">WHY IoT SECURITY IS HARD</div><h2>Tiny devices create a giant attack surface.</h2></div>
+    <p>IoT is difficult to secure because devices are numerous, resource-constrained, physically exposed, built by many vendors and often deployed faster than security planning can keep up.</p>
+  </div>
+
+  <div class="risk-wall">
+    <button data-risk="surface"><b>Huge attack surface</b><span>Many devices, networks and data types</span></button>
+    <button data-risk="resources"><b>Limited resources</b><span>Little RAM, CPU and battery</span></button>
+    <button data-risk="ecosystem"><b>Complex ecosystem</b><span>Many dependencies + cloud links</span></button>
+    <button data-risk="standards"><b>Fragmented standards</b><span>Inconsistent guidance</span></button>
+    <button data-risk="deployment"><b>Widespread deployment</b><span>Often rushed into critical environments</span></button>
+    <button data-risk="integration"><b>Security integration</b><span>Many protocols + auth schemes</span></button>
+    <button data-risk="safety"><b>Safety impact</b><span>Cyber failures can become physical failures</span></button>
+    <button data-risk="cost"><b>Low-cost pressure</b><span>Security features may be sacrificed</span></button>
+    <button data-risk="expertise"><b>Skills shortage</b><span>Few experienced specialists</span></button>
+    <button data-risk="updates"><b>Patching problem</b><span>Devices may be hard or impossible to update</span></button>
+    <button data-risk="code"><b>Insecure programming</b><span>Functionality may win over security</span></button>
+    <button data-risk="liability"><b>Unclear liability</b><span>Who is responsible after failure?</span></button>
+  </div>
+  <div class="risk-reader" id="riskReader"><b>Select a risk.</b><span>Each one changes the security design.</span></div>
+
+  <div class="risk-game gamebox">
+    <div class="game-title"><span>GAME 3 · DEFEND THE SMART HOSPITAL</span><h3>A hospital installs 2,000 cheap networked infusion pumps. Pick the three risks you would raise first.</h3></div>
+    <div class="risk-picks" id="riskPicks"><button data-pick="updates">Patching problem</button><button data-pick="safety">Safety impact</button><button data-pick="resources">Limited resources</button><button data-pick="liability">Unclear liability</button><button data-pick="standards">Fragmented standards</button></div>
+    <div class="feedback" id="riskFeedback">Choose three. There can be multiple reasonable concerns, but some are more immediate.</div>
+  </div>
+
+  <div class="deep-grid">
+    <button class="flip"><div class="flip-in"><div class="face front"><small>DEEP DIVE 01</small><h3>The patching vulnerability</h3><p>Many embedded systems are deployed and then forgotten.</p><em>Flip ↻</em></div><div class="face back"><h3>Why patching is unusually hard</h3><ul><li>Chip makers are pushed to ship firmware quickly and cheaply.</li><li>Device makers often focus on product function rather than firmware maintenance.</li><li>End users may have no update mechanism or little information about how to patch.</li><li>This leaves large populations of Internet-connected devices exposed long after deployment.</li></ul></div></div></button>
+    <button class="flip"><div class="flip-in"><div class="face front"><small>DEEP DIVE 02</small><h3>Security can become safety</h3><p>IoT does not only store data — it can move machinery.</p><em>Flip ↻</em></div><div class="face back"><h3>Cyber → physical consequence</h3><ul><li>Some IoT devices are sensors only, but many systems also include actuators.</li><li>A compromised actuator can change machinery, valves, motors or medical-device behaviour.</li><li>This raises the bar above ordinary information security.</li><li>Availability and integrity can be directly linked to human safety.</li></ul></div></div></button>
+    <button class="flip"><div class="flip-in"><div class="face front"><small>DEEP DIVE 03</small><h3>Cheap does not mean simple</h3><p>Cost pressure can remove the very controls security needs.</p><em>Flip ↻</em></div><div class="face back"><h3>Economics of insecurity</h3><ul><li>IoT devices are manufactured and deployed in huge numbers.</li><li>Manufacturers have strong incentives to minimise unit cost.</li><li>Customers may accept reduced security to keep deployment affordable.</li><li>Resource constraints also make advanced controls harder to implement after purchase.</li></ul></div></div></button>
+  </div>
+</section>
+
+<section class="zone alt" id="objectives">
+  <div class="zone-head">
+    <div><span class="num">04</span><div class="eyebrow">NIST IoT SECURITY OBJECTIVES</div><h2>Security means keeping the system trustworthy — even when things go wrong.</h2></div>
+    <p>The lecture groups IoT security into seven practical objectives: control access, protect devices and data, detect problems, keep operating safely and recover.</p>
+  </div>
+
+  <div class="shield-grid">
+    <article><span>01</span><b>Restrict logical access</b><small>Firewalls, layers, separate credentials</small></article>
+    <article><span>02</span><b>Restrict physical access</b><small>Locks, card readers, guards</small></article>
+    <article><span>03</span><b>Protect components</b><small>Patch, disable unused services, least privilege</small></article>
+    <article><span>04</span><b>Protect data integrity</b><small>Prevent unauthorised modification</small></article>
+    <article><span>05</span><b>Detect incidents</b><small>Break the attack chain early</small></article>
+    <article><span>06</span><b>Maintain functionality</b><small>Redundancy + graceful degradation</small></article>
+    <article><span>07</span><b>Restore after incident</b><small>Incident response + recovery</small></article>
+  </div>
+
+  <div class="objective-game gamebox">
+    <div class="game-title"><span>GAME 4 · SAVE THE CITY</span><h3 id="objectiveQuestion"></h3></div>
+    <div class="choice-row" id="objectiveChoices"></div>
+    <div class="feedback" id="objectiveFeedback"></div>
+  </div>
+
+  <div class="graceful">
+    <div><span>NORMAL</span><b>Full automation</b></div><i>→</i>
+    <div><span>EMERGENCY</span><b>Operators more involved</b></div><i>→</i>
+    <div><span>MANUAL</span><b>No automation</b></div>
+    <p><b>Graceful degradation:</b> when automation fails, the system steps down safely instead of collapsing.</p>
+  </div>
+
+  <div class="deep-grid">
+    <button class="flip"><div class="flip-in"><div class="face front"><small>DEEP DIVE 01</small><h3>Logical access separation</h3><p>Corporate and IoT networks should not behave like one flat network.</p><em>Flip ↻</em></div><div class="face back"><h3>Restrict logical access</h3><ul><li>Firewalls can prevent traffic from passing directly between corporate and IoT networks.</li><li>Unidirectional gateways may be useful in high-assurance designs.</li><li>Corporate and IoT users can have separate authentication mechanisms and credentials.</li><li>Critical communications should sit in the most secure and reliable network layers.</li></ul></div></div></button>
+    <button class="flip"><div class="flip-in"><div class="face front"><small>DEEP DIVE 02</small><h3>Protect each component</h3><p>Hardening still matters, even for tiny devices.</p><em>Flip ↻</em></div><div class="face back"><h3>Component hardening</h3><ul><li>Deploy tested patches quickly.</li><li>Disable unused ports and services.</li><li>Apply least privilege.</li><li>Track audit trails and use antivirus or file-integrity checking when technically feasible.</li></ul></div></div></button>
+    <button class="flip"><div class="flip-in"><div class="face front"><small>DEEP DIVE 03</small><h3>Recovery is part of security</h3><p>Incidents are expected, not impossible.</p><em>Flip ↻</em></div><div class="face back"><h3>Resilience + recovery</h3><ul><li>Critical components should have redundant counterparts.</li><li>Failure should not generate new network or safety problems elsewhere.</li><li>Graceful degradation keeps essential functions available with more human involvement.</li><li>A strong program is measured partly by how quickly the system recovers after an incident.</li></ul></div></div></button>
+  </div>
+</section>
+
+<section class="zone" id="tamper">
+  <div class="zone-head">
+    <div><span class="num">05</span><div class="eyebrow">PHYSICAL TAMPERING</div><h2>What if the attacker can touch the device?</h2></div>
+    <p>IoT devices may live in streets, factories, vehicles and remote sites. Tamper resistance makes physical attack difficult; tamper detection makes the system aware that physical access occurred.</p>
+  </div>
+
+  <div class="tamper-lab">
+    <div class="tamper-box" id="tamperBox">
+      <div class="seal">SECURITY SEAL</div>
+      <div class="screw sA">✦</div><div class="screw sB">✦</div><div class="screw sC">✦</div><div class="screw sD">✦</div>
+      <div class="tamper-screen"><span>NODE 7A</span><b id="tamperState">ENCLOSURE SECURE</b></div>
+      <button id="openBox">TRY TO OPEN</button>
+    </div>
+    <div class="tamper-console">
+      <span>GAME 5 · TAMPER LAB</span>
+      <h3>Choose a defence, then test the enclosure.</h3>
+      <div class="tamper-controls">
+        <button data-tamper="steel">Hardened enclosure</button>
+        <button data-tamper="seal">Tamper-evident seal</button>
+        <button data-tamper="switch">Magnetic switch</button>
+        <button data-tamper="sensor">Voltage / temperature sensor</button>
+        <button data-tamper="mesh">Circuit mesh</button>
+      </div>
+      <div class="tamper-readout" id="tamperReadout">No extra defence selected.</div>
+    </div>
+  </div>
+
+  <div class="tamper-compare">
+    <article><b>RESISTANCE</b><p>Passive protection that makes tampering harder.</p><span>Steel enclosure · locks · security screws · tightly packed boards</span></article>
+    <article><b>EVIDENCE</b><p>Shows that tampering happened.</p><span>Special seals · tamper-evident tape</span></article>
+    <article><b>DETECTION</b><p>Actively notices physical access or attack.</p><span>Switches · sensors · circuitry / mesh</span></article>
+  </div>
+
+  <div class="deep-grid">
+    <button class="flip"><div class="flip-in"><div class="face front"><small>DEEP DIVE 01</small><h3>Resistance is physical design</h3><p>Make the attacker work harder.</p><em>Flip ↻</em></div><div class="face back"><h3>Tamper resistance</h3><ul><li>Hardened steel, locks and security screws increase physical difficulty.</li><li>Tightly packing components can make internal probing more difficult.</li><li>Resistance is passive: the device does not have to detect the attack to slow it down.</li><li>Tamper-evident seals add deterrence by making interference visible.</li></ul></div></div></button>
+    <button class="flip"><div class="flip-in"><div class="face front"><small>DEEP DIVE 02</small><h3>Switches + sensors</h3><p>The box can notice being moved or opened.</p><em>Flip ↻</em></div><div class="face back"><h3>Tamper detection examples</h3><ul><li>Mercury, magnetic and pressure switches can detect opening, movement or boundary breach.</li><li>Temperature and radiation sensors can detect unusual environmental conditions.</li><li>Voltage and power sensors can detect electrical attacks.</li><li>Flexible circuitry, resistance wire or fiber optics can detect puncture or break.</li></ul></div></div></button>
+    <button class="flip"><div class="flip-in"><div class="face front"><small>DEEP DIVE 03</small><h3>Why physical security matters</h3><p>Edge devices may sit outside the enterprise perimeter.</p><em>Flip ↻</em></div><div class="face back"><h3>IoT changes the threat model</h3><ul><li>Large numbers of devices may be deployed in locations with weak physical protection.</li><li>Multiple manufacturers and supply chains increase complexity.</li><li>Physical compromise can expose hardware, firmware, secrets or sensor inputs.</li><li>Tamper resistance and detection are therefore especially important at device and fog levels.</li></ul></div></div></button>
+  </div>
+</section>
+
+<section class="zone alt" id="gateway">
+  <div class="zone-head">
+    <div><span class="num">06</span><div class="eyebrow">SECURITY REQUIREMENTS + GATEWAY</div><h2>The gateway is the security checkpoint between tiny devices and bigger systems.</h2></div>
+    <p>IoT security must protect communications, stored data, services, identities and auditability. The gateway can enforce many of those functions when constrained devices cannot.</p>
+  </div>
+
+  <div class="requirement-grid">
+    <article><b>Communication security</b><span>Confidentiality, integrity and privacy while data moves</span></article>
+    <article><b>Data management security</b><span>Protect data while stored and processed</span></article>
+    <article><b>Service provision security</b><span>Stop unauthorised service use and fraud</span></article>
+    <article><b>Policy integration</b><span>Consistent security across many device types</span></article>
+    <article><b>Mutual authentication</b><span>Device/user and IoT verify each other</span></article>
+    <article><b>Security audit</b><span>Make access transparent, traceable and reproducible</span></article>
+  </div>
+
+  <div class="handshake-game">
+    <div class="handshake-side device"><span>DEVICE</span><div class="avatar">D</div><small>constrained sensor</small></div>
+    <div class="handshake-wire" id="handshakeWire"><i></i></div>
+    <div class="handshake-side gateway"><span>GATEWAY</span><div class="avatar">G</div><small>security checkpoint</small></div>
+    <div class="handshake-panel">
+      <span>GAME 6 · BUILD A TRUSTED CONNECTION</span>
+      <h3 id="handshakeTitle">Step 1: identify the device.</h3>
+      <div class="handshake-actions" id="handshakeActions"></div>
+      <div class="feedback" id="handshakeFeedback">Complete the steps in the right order.</div>
+    </div>
+  </div>
+
+  <div class="gateway-functions">
+    <article><span>01</span><b>Identify each access</b></article>
+    <article><span>02</span><b>Authenticate with devices</b></article>
+    <article><span>03</span><b>Mutual auth with applications</b></article>
+    <article><span>04</span><b>Secure stored + transferred data</b></article>
+    <article><span>05</span><b>Protect privacy</b></article>
+    <article><span>06</span><b>Self-diagnosis + self-repair</b></article>
+    <article><span>07</span><b>Firmware / software update</b></article>
+    <article><span>08</span><b>Remote + local configuration</b></article>
+  </div>
+
+  <div class="deep-grid">
+    <button class="flip"><div class="flip-in"><div class="face front"><small>DEEP DIVE 01</small><h3>Mutual authentication</h3><p>Both sides should know who they are talking to.</p><em>Flip ↻</em></div><div class="face back"><h3>Mutual vs one-way auth</h3><ul><li>With one-way authentication, only one side proves its identity.</li><li>The gateway may authenticate the device, or the device may authenticate the gateway.</li><li>Mutual authentication means both sides prove identity.</li><li>Applications connecting through the gateway should also support mutual authentication.</li></ul></div></div></button>
+    <button class="flip"><div class="flip-in"><div class="face front"><small>DEEP DIVE 02</small><h3>Gateway security limits</h3><p>A strong gateway cannot magically encrypt a device that cannot encrypt.</p><em>Flip ↻</em></div><div class="face back"><h3>Constrained-device challenge</h3><ul><li>Gateways can provide TLS/IPsec and other secure functions toward central systems.</li><li>Devices attached behind the gateway can still sit outside that protected zone.</li><li>If a constrained device has no encryption capability, protecting data stored inside that device may be impractical.</li><li>Security architecture must account for what each endpoint can actually support.</li></ul></div></div></button>
+    <button class="flip"><div class="flip-in"><div class="face front"><small>DEEP DIVE 03</small><h3>Security across all four levels</h3><p>Identity, tamper protection, confidentiality and network security overlap.</p><em>Flip ↻</em></div><div class="face back"><h3>IoT security environment</h3><ul><li>User authentication and access control span the entire ecosystem and can use RBAC.</li><li>Tamper resistance/detection is strongest at device and fog levels, where physical exposure is common.</li><li>Data protection and confidentiality apply at every level.</li><li>Network security must protect data in motion between every level.</li></ul></div></div></button>
+  </div>
+</section>
+
+<section class="zone" id="minisec">
+  <div class="zone-head">
+    <div><span class="num">07</span><div class="eyebrow">MINISEC + LIGHTWEIGHT SECURITY</div><h2>How do you secure a tiny sensor with almost no spare battery or memory?</h2></div>
+    <p>MiniSec is a lightweight link-layer security module for TinyOS sensor networks. Its challenge is to deliver real confidentiality, authentication and replay protection with very low overhead.</p>
+  </div>
+
+  <div class="minisec-hero">
+    <div class="tiny-device"><span>TinyOS</span><b>48 KB code</b><b>10 KB RAM</b><i></i></div>
+    <div class="security-stack">
+      <span>MINISEC</span>
+      <article><b>Confidentiality</b><small>Hide content</small></article>
+      <article><b>Authentication</b><small>Verify legitimate sender</small></article>
+      <article><b>Replay protection</b><small>Reject recorded old packets</small></article>
+      <article><b>Freshness</b><small>Know message ordering</small></article>
+      <article><b>Low energy</b><small>Keep overhead small</small></article>
+      <article><b>Loss resilience</b><small>Survive dropped packets</small></article>
+    </div>
+  </div>
+
+  <div class="replay-game gamebox">
+    <div class="game-title"><span>GAME 7 · STOP THE REPLAY ATTACK</span><h3>MiniSec-U has already accepted counter 42. What should the receiver do with each next packet?</h3></div>
+    <div class="packet-queue" id="packetQueue"></div>
+    <div class="feedback" id="replayFeedback">Accept counters greater than the last valid one. Reject equal or smaller counters.</div>
+  </div>
+
+  <div class="mode-game">
+    <div class="mode-card">
+      <span>MiniSec-U</span><h3>Unicast</h3><p>Synchronized counter per sender. Great for one-to-one communication.</p>
+      <b>Receiver rejects equal or smaller counters.</b>
+    </div>
+    <div class="mode-card">
+      <span>MiniSec-B</span><h3>Broadcast</h3><p>Timing epochs + bloom filter avoid huge per-sender memory cost.</p>
+      <b>Designed for many senders / receivers.</b>
+    </div>
+    <div class="mode-quiz">
+      <span>GAME 8 · PICK THE MODE</span>
+      <h3 id="modeQuestion">One sensor sends privately to one gateway. Which mode?</h3>
+      <div class="choice-row" id="modeChoices"><button data-mode="U">MiniSec-U</button><button data-mode="B">MiniSec-B</button></div>
+      <div class="feedback" id="modeFeedback"></div>
+    </div>
+  </div>
+
+  <div class="crypto-band">
+    <article><span>SKIPJACK</span><h3>Fast + small, but dated</h3><p>80-bit key; historically attractive for constrained systems because code, memory and computation were efficient. The lecture notes that 80 bits is now generally inadequate and newer lightweight algorithms are preferable going forward.</p></article>
+    <article><span>OCB</span><h3>One-pass authenticated encryption</h3><p>Combines encryption and authentication efficiently. It is designed to minimize block-cipher calls and suits stringent sensor-node energy constraints.</p></article>
+  </div>
+
+  <div class="deep-grid">
+    <button class="flip"><div class="flip-in"><div class="face front"><small>DEEP DIVE 01</small><h3>Replay protection</h3><p>Recording a valid packet should not let an attacker use it later.</p><em>Flip ↻</em></div><div class="face back"><h3>Why counters work</h3><ul><li>MiniSec-U uses synchronized, monotonically increasing counters.</li><li>Once a receiver has observed a counter value, it rejects packets with equal or smaller values.</li><li>Repeated plaintext still produces different ciphertext because the counter changes.</li><li>If packets are lost, sender and receiver use a resynchronization protocol.</li></ul></div></div></button>
+    <button class="flip"><div class="flip-in"><div class="face front"><small>DEEP DIVE 02</small><h3>Why broadcast is harder</h3><p>Per-sender counters become expensive at scale.</p><em>Flip ↻</em></div><div class="face back"><h3>MiniSec-B</h3><ul><li>MiniSec-U cannot simply scale to many broadcasters because each receiver would need state for every sender.</li><li>Frequent resynchronization would also be expensive.</li><li>MiniSec-B uses time epochs and a bloom filter for replay defence.</li><li>Messages already represented in the bloom filter are treated as replays and dropped.</li></ul></div></div></button>
+    <button class="flip"><div class="flip-in"><div class="face front"><small>DEEP DIVE 03</small><h3>Why OCB suits sensors</h3><p>Authenticated encryption without wasting energy.</p><em>Flip ↻</em></div><div class="face back"><h3>OCB efficiency</h3><ul><li>OCB is a one-pass authenticated-encryption mode.</li><li>It minimizes the number of encryption operations required per message.</li><li>Blocks can be processed in parallel.</li><li>Efficiency is valuable because sensor nodes have strict energy and memory constraints.</li></ul></div></div></button>
+  </div>
+</section>
+
+<section class="zone final" id="final">
+  <div class="zone-head">
+    <div><span class="num">08</span><div class="eyebrow">FINAL CITY DEFENSE</div><h2>Can your IoT system survive the real world?</h2></div>
+    <p>Nine questions across device anatomy, fog/cloud, development risks, security objectives, tampering, gateways and MiniSec.</p>
+  </div>
+  <div id="finalQuiz" class="final-grid"></div>
+</section>
+</main>
+
+<footer><b>COMP6013 · WEEK 11</b><span>Internet of Things Security</span><span>IoT Security City</span></footer>
+<script src="app.js"></script>
+</body>
+</html>
